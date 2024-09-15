@@ -59,16 +59,6 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    // public function login()
-    // {
-    //     $credentials = request(['email', 'password']);
-
-    //     if (! $token = auth()->attempt($credentials)) {
-    //         return response()->json(['error' => 'Unauthorized'], 401);
-    //     }
-
-    //     return $this->respondWithToken($token);
-    // }
 
     public function login()
     {
@@ -78,11 +68,22 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        // return $this->respondWithToken($token);
-
-        // Jika login berhasil, arahkan ke halaman transfer
-        return redirect('/auth/transfer')->with('access_token', $token);
+        return $this->respondWithToken($token);
     }
+
+    // public function login()
+    // {
+    //     $credentials = request(['email', 'password']);
+
+    //     if (! $token = auth()->attempt($credentials)) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     // return $this->respondWithToken($token);
+
+    //     // Jika login berhasil, arahkan ke halaman transfer
+    //     return redirect('/auth/transfer')->with('access_token', $token);
+    // }
 
 
 
@@ -113,10 +114,50 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function updateToken(Request $request)
     {
-        return $this->respondWithToken(auth()->refresh());
+        // Validasi request
+        $validatedData = $request->validate([
+            'token' => 'required',
+        ]);
+
+
+        try {
+            // Verifikasi token refresh yang diberikan
+            $newToken = auth()->refresh($validatedData['token']); // Menghasilkan token baru
+
+            // Membuat response sesuai format
+            return response()->json([
+                'accessToken' => $newToken,    // Token akses baru
+                'refreshToken' => $request->token // Token refresh (tetap sama)
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan dalam verifikasi token
+            return response()->json([
+                'error' => 'Token is invalid or expired',
+            ], 401);
+        }
     }
+
+    //     public function updateToken(Request $request)
+    // {
+    //     // Validasi request
+    //     $validatedData = $request->validate([
+    //         'token' => 'required|string',
+    //     ]);
+
+    //     // Lakukan proses dengan $validatedData['token']
+    //     // Misalnya: refresh token
+    //     $newToken = $this->refreshToken($validatedData['token']);
+
+    //     return response()->json([
+    //         'accessToken' => $newToken['access_token'],
+    //         'refreshToken' => $newToken['refresh_token'],
+    //     ]);
+    // }
+
+
 
     /**
      * Get the token array structure.
@@ -129,8 +170,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'refresh_token' => auth()->refresh(),
         ]);
     }
 

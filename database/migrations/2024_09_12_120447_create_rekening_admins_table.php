@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rekening_admins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bank_id')->constrained();
+            $table->string('bank');
             $table->string('rekening');
             $table->string('atas_nama');
             $table->timestamps();

@@ -15,9 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            BankSeeder::class,
+        ]);
         RekeningAdmin::factory()->count(10)->create();
-
-        Bank::factory(10)->create();
     }
 }
 

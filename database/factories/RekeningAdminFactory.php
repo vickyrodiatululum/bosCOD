@@ -18,9 +18,10 @@ class RekeningAdminFactory extends Factory
     public function definition()
     {
         return [
-            'bank_id' => Bank::factory(),  // Membuat data bank baru secara otomatis
+            // Menggunakan factory bank yang sudah dibuat sebelumnya untuk memilih bank acak dari daftar bank Indonesia
+            'bank' => Bank::all()->random()->name,
             'rekening' => $this->faker->bankAccountNumber,  // Nomor rekening acak
-            'atas_nama' => $this->faker->name,  // Nama pemilik rekening
+            'atas_nama' => 'PT. Bos COD',  // Nama pemilik rekening di-set sebagai PT. Bos COD
         ];
     }
 }

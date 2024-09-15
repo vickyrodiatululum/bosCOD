@@ -9,15 +9,11 @@ class RekeningAdmin extends Model
 {
     use HasFactory;
 
+    protected $table = 'rekening_admins';
+
     protected $fillable = [
-        'bank_id',
+        'bank',
         'rekening',
         'atas_nama',
     ];
-
-    // Relasi ke model Bank (assuming you have a Bank model)
-    public function bank()
-    {
-        return $this->belongsTo(Bank::class);
-    }
 }

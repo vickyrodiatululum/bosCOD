@@ -17,7 +17,7 @@ class BankFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->company, // Nama bank
+            'name' => $this->faker->name,
         ];
     }
 }
